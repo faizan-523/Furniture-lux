@@ -1,0 +1,15 @@
+# Ignore artifacts:
+.next
+out
+dist
+build
+coverage
+
+# Ignore generated files:
+node_modules
+*.lock
+package-lock.json
+npm-debug.log*
+
+# Ignore public assets:
+public/

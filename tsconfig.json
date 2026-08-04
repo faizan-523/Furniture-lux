@@ -1,0 +1,56 @@
+{
+  "compilerOptions": {
+    // ─── Language & Environment ──────────────────────────────────────────────
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+
+    // ─── Strict Mode ────────────────────────────────────────────────────────
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "exactOptionalPropertyTypes": false,
+
+    // ─── Modules ────────────────────────────────────────────────────────────
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    // ─── Output ─────────────────────────────────────────────────────────────
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+
+    // ─── Next.js Plugin ─────────────────────────────────────────────────────
+    "plugins": [{ "name": "next" }],
+
+    // ─── Path Aliases ────────────────────────────────────────────────────────
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/features/*": ["./features/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/models/*": ["./models/*"],
+      "@/services/*": ["./services/*"],
+      "@/actions/*": ["./actions/*"],
+      "@/providers/*": ["./providers/*"],
+      "@/types/*": ["./types/*"],
+      "@/utils/*": ["./utils/*"],
+      "@/constants/*": ["./constants/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
