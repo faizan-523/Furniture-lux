@@ -10,15 +10,20 @@ import { ProductDetail } from "@/components/products";
 import { type Product } from "@/models";
 import { SHOP_PRODUCTS } from "@/data/shop";
 import { HOMEPAGE_PRODUCTS } from "@/data/home";
+import { COLLECTION_PRODUCTS } from "@/data/collections";
 
 type Props = { params: Promise<{ slug: string }> };
 
 // ─── Combined static catalogue (deduplicated by slug) ─────────────────────────
 
+const allCollectionProducts = Object.values(COLLECTION_PRODUCTS).flat();
 const STATIC_PRODUCTS: Product[] = [
   ...SHOP_PRODUCTS,
   ...HOMEPAGE_PRODUCTS.filter(
     (p) => !SHOP_PRODUCTS.some((s) => s.slug === p.slug),
+  ),
+  ...allCollectionProducts.filter(
+    (p) => !SHOP_PRODUCTS.some((s) => s.slug === p.slug) && !HOMEPAGE_PRODUCTS.some((h) => h.slug === p.slug),
   ),
 ];
 
