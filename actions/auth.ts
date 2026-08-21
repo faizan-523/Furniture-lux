@@ -10,10 +10,10 @@ import { redirect } from "next/navigation";
 
 // Next.js redirect() throws internally — detect it by its digest so we can re-throw.
 function isNextRedirect(e: unknown): boolean {
-  return (
-    e instanceof Error &&
-    (e as Error & { digest?: string }).digest?.startsWith("NEXT_REDIRECT") === true
-  );
+  if (typeof e === "object" && e !== null && "digest" in e) {
+    return String((e as { digest: string }).digest).startsWith("NEXT_REDIRECT");
+  }
+  return e instanceof Error && (e as Error & { digest?: string }).digest?.startsWith("NEXT_REDIRECT") === true;
 }
 import bcrypt from "bcryptjs";
 import { signIn, signOut } from "@/auth";

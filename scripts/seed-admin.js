@@ -43,8 +43,8 @@ const User = mongoose.models.User || mongoose.model("User", UserSchema);
 async function seedAdmin() {
   console.log("Connecting to database:", MONGODB_URI);
   try {
-    await mongoose.connect(MONGODB_URI);
-    console.log("Database connected successfully.");
+    await mongoose.connect(MONGODB_URI, { dbName: "furniturelux" });
+    console.log("Database connected successfully to 'furniturelux'.");
 
     const adminEmail = (process.env.ADMIN_EMAIL || "admin@furniturelux.com").toLowerCase().trim();
     const securePassword = process.env.ADMIN_PASSWORD || "Adminlux2026!";
