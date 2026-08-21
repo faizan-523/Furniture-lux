@@ -46,26 +46,29 @@ async function seedAdmin() {
     await mongoose.connect(MONGODB_URI);
     console.log("Database connected successfully.");
 
-    const adminEmail = "admin@furniturelux.com";
+    const adminEmail = (process.env.ADMIN_EMAIL || "admin@furniturelux.com").toLowerCase().trim();
+    const securePassword = process.env.ADMIN_PASSWORD || "Adminlux2026!";
+    const hashedPassword = await bcrypt.hash(securePassword, 12);
+
     const existingAdmin = await User.findOne({ email: adminEmail });
 
     if (existingAdmin) {
-      console.log(`Admin user with email "${adminEmail}" already exists. No action taken.`);
-      return;
+      existingAdmin.hashedPassword = hashedPassword;
+      existingAdmin.role = "admin";
+      await existingAdmin.save();
+      console.log(`Admin user "${adminEmail}" updated with latest password and admin role.`);
+    } else {
+      await User.create({
+        name: "FurnitureLux Admin",
+        email: adminEmail,
+        hashedPassword,
+        role: "admin",
+      });
+      console.log(`Admin user "${adminEmail}" created successfully.`);
     }
 
-    const securePassword = "Adminlux2026!";
-    const hashedPassword = await bcrypt.hash(securePassword, 12);
-
-    await User.create({
-      name: "FurnitureLux Admin",
-      email: adminEmail,
-      hashedPassword,
-      role: "admin",
-    });
-
     console.log("-----------------------------------------");
-    console.log("Admin user seeded successfully!");
+    console.log("Admin user configured in MongoDB Atlas!");
     console.log(`Email:    ${adminEmail}`);
     console.log(`Password: ${securePassword}`);
     console.log("-----------------------------------------");

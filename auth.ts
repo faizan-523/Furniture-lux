@@ -13,6 +13,8 @@ import type { NextAuthConfig } from "next-auth";
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const config: NextAuthConfig = {
+  trustHost: true,
+  secret: process.env.AUTH_SECRET,
   // ─── Providers ──────────────────────────────────────────────────────────────
   providers: [
     Credentials({
@@ -29,10 +31,11 @@ const config: NextAuthConfig = {
         if (!parsed.success) return null;
 
         const { email, password } = parsed.data;
+        const normalizedEmail = email.toLowerCase().trim();
 
         // 2. Find the user — explicitly select the hashedPassword field
         await connectToDatabase();
-        const user = await UserModel.findOne({ email }).select("+hashedPassword");
+        const user = await UserModel.findOne({ email: normalizedEmail }).select("+hashedPassword");
         if (!user) return null;
 
         // 3. Compare password

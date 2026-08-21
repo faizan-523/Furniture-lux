@@ -53,12 +53,13 @@ export async function registerUser(
   }
 
   const { name, email, password } = parsed.data;
+  const normalizedEmail = email.toLowerCase().trim();
 
   try {
     await connectToDatabase();
 
     // 2. Check for duplicate email
-    const existing = await UserModel.findOne({ email });
+    const existing = await UserModel.findOne({ email: normalizedEmail });
     if (existing) {
       return {
         success: false,
@@ -69,7 +70,7 @@ export async function registerUser(
 
     // 3. Hash password & create user
     const hashedPassword = await bcrypt.hash(password, 12);
-    await UserModel.create({ name, email, hashedPassword });
+    await UserModel.create({ name, email: normalizedEmail, hashedPassword, role: "user" });
   } catch (error) {
     console.error("[registerUser]", error);
     return {
@@ -81,14 +82,14 @@ export async function registerUser(
   // 4. Auto sign-in after registration
   try {
     await signIn("credentials", {
-      email,
+      email: normalizedEmail,
       password,
       redirect: false,
     });
   } catch (error) {
     if (isNextRedirect(error)) throw error;
 
-    if (error instanceof AuthError) {
+    if (error instanceof AuthError || (error as { type?: string })?.type) {
       return {
         success: false,
         message: "Account created but sign-in failed. Please sign in manually.",
@@ -127,16 +128,21 @@ export async function loginUser(
   }
 
   const { email, password } = parsed.data;
+  const normalizedEmail = email.toLowerCase().trim();
 
   try {
     await signIn("credentials", {
-      email,
+      email: normalizedEmail,
       password,
       redirect: false,
     });
   } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
+    if (isNextRedirect(error)) throw error;
+
+    const err = error as { type?: string; name?: string; message?: string };
+    if (error instanceof AuthError || err?.type || err?.name === "CredentialsSignin" || err?.name === "AuthError") {
+      const errorType = err?.type || err?.name;
+      switch (errorType) {
         case "CredentialsSignin":
           return {
             success: false,
@@ -145,7 +151,7 @@ export async function loginUser(
         default:
           return {
             success: false,
-            message: "Sign in failed. Please try again.",
+            message: "Invalid email or password. Please try again.",
           };
       }
     }

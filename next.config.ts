@@ -41,7 +41,12 @@ const nextConfig: NextConfig = {
 
   // ─── Redirects ────────────────────────────────────────────────────────────
   async redirects() {
-    return [];
+    return [
+      { source: "/register", destination: "/sign-up", permanent: true },
+      { source: "/signup", destination: "/sign-up", permanent: true },
+      { source: "/login", destination: "/sign-in", permanent: true },
+      { source: "/signin", destination: "/sign-in", permanent: true },
+    ];
   },
 
   // ─── Experimental ─────────────────────────────────────────────────────────
