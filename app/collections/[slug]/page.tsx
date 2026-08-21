@@ -15,6 +15,12 @@ import { ROUTES } from "@/constants/routes";
 
 type Props = { params: Promise<{ slug: string }> };
 
+// ─── Static params — pre-render all known slugs at build time ─────────────────
+
+export function generateStaticParams() {
+  return COLLECTIONS.map((c) => ({ slug: c.slug }));
+}
+
 // ─── Helper to fetch collection by slug ───────────────────────────────────────
 
 function getCollectionBySlug(slug: string) {
