@@ -4,7 +4,8 @@
 
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
 import { useState } from "react";
@@ -20,11 +21,27 @@ import type { AuthFormState } from "@/lib/validations/auth";
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function SignInPage() {
+  const router = useRouter();
   const [state, action, isPending] = useActionState<AuthFormState, FormData>(
     loginUser,
     undefined,
   );
   const [showPassword, setShowPassword] = useState(false);
+
+  // After a successful login the server action calls redirect(), which triggers
+  // a soft navigation (no full reload). SessionProvider stays mounted and won't
+  // re-fetch automatically. router.refresh() forces Next.js to re-fetch server
+  // components AND re-sync the SessionProvider so the header updates immediately.
+  const prevPendingRef = useRef(false);
+  useEffect(() => {
+    // Transition: was pending → now not pending and no error state returned
+    // means the server action redirected (success path).
+    if (prevPendingRef.current && !isPending && !state) {
+      router.refresh();
+    }
+    prevPendingRef.current = isPending;
+  }, [isPending, state, router]);
+
 
   return (
     <>

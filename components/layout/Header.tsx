@@ -201,7 +201,7 @@ function AuthMenu() {
               role="menuitem"
               onClick={() => {
                 setOpen(false);
-                signOut({ callbackUrl: ROUTES.HOME });
+                signOut({ callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/` });
               }}
               className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-[--color-destructive] hover:bg-[--color-destructive]/8 transition-colors text-left"
             >
@@ -444,7 +444,7 @@ export function Header() {
                         variant="ghost"
                         size="md"
                         fullWidth
-                        onClick={() => signOut({ callbackUrl: ROUTES.HOME })}
+                        onClick={() => signOut({ callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/` })}
                         className="text-[--color-destructive] hover:bg-[--color-destructive]/5"
                       >
                         <LogOut className="size-4" aria-hidden="true" />

@@ -4,7 +4,8 @@
 
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -25,12 +26,23 @@ import type { AuthFormState } from "@/lib/validations/auth";
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [state, action, isPending] = useActionState<AuthFormState, FormData>(
     registerUser,
     undefined,
   );
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Same as sign-in: after registerUser redirects, soft navigation leaves
+  // SessionProvider stale. router.refresh() re-syncs it immediately.
+  const prevPendingRef = useRef(false);
+  useEffect(() => {
+    if (prevPendingRef.current && !isPending && !state) {
+      router.refresh();
+    }
+    prevPendingRef.current = isPending;
+  }, [isPending, state, router]);
 
   return (
     <>

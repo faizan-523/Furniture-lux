@@ -53,12 +53,9 @@ const CartSchema = new Schema<ICartDocument>(
   },
   {
     timestamps: true,
+    collection: "carts",
   },
 );
-
-// ─── Index ────────────────────────────────────────────────────────────────────
-
-CartSchema.index({ userId: 1 });
 
 // ─── Model ────────────────────────────────────────────────────────────────────
 

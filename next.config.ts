@@ -20,8 +20,11 @@ const nextConfig: NextConfig = {
 
   // ─── Compiler ─────────────────────────────────────────────────────────────
   compiler: {
-    // Remove console.log in production
-    removeConsole: process.env.NODE_ENV === "production",
+    // Remove console.log in production but keep console.error/warn for Vercel logs
+    removeConsole:
+      process.env.NODE_ENV === "production"
+        ? { exclude: ["error", "warn"] }
+        : false,
   },
 
   // ─── Headers ──────────────────────────────────────────────────────────────

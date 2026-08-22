@@ -2,6 +2,15 @@
 // NextAuth v5 (Auth.js) core configuration for FurnitureLux.
 // Exports: handlers, auth, signIn, signOut
 
+// Fix: @auth/core's createActionURL reads AUTH_URL first; if absent it falls
+// back to the request's x-forwarded-host header. On Vercel this can be the
+// deployment-specific URL (e.g. furniturelux-abc123.vercel.app) instead of the
+// production alias, causing sign-out to redirect to a 404 DEPLOYMENT_NOT_FOUND.
+// Setting AUTH_URL here guarantees createActionURL always uses the correct origin.
+if (!process.env.AUTH_URL && process.env.NEXT_PUBLIC_SITE_URL) {
+  process.env.AUTH_URL = process.env.NEXT_PUBLIC_SITE_URL;
+}
+
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";

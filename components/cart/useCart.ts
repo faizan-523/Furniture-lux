@@ -6,7 +6,6 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
-import { SHOP_PRODUCTS } from "@/data/shop";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -23,23 +22,6 @@ export interface CartItem {
 }
 
 const STORAGE_KEY = "furniturelux_cart";
-
-// Seed data (first visit only)
-function buildSeedItems(): CartItem[] {
-  return SHOP_PRODUCTS.filter((p) =>
-    ["shop-1", "shop-6", "shop-12"].includes(p.id)
-  ).map((p) => ({
-    id: p.id,
-    name: p.name,
-    slug: p.slug,
-    category: p.category,
-    price: p.price,
-    compareAtPrice: p.compareAtPrice,
-    image: p.images[0]?.url ?? "",
-    imageAlt: p.images[0]?.alt ?? p.name,
-    quantity: 1,
-  }));
-}
 
 export function useCart() {
   const { data: session, status } = useSession();
@@ -115,15 +97,8 @@ export function useCart() {
           console.error("Failed to load authenticated cart:", err);
         }
       } else {
-        // E. Logged out: Use client localStorage setup
-        if (localItems.length === 0 && !localStorage.getItem(STORAGE_KEY)) {
-          // Initial seed
-          const seed = buildSeedItems();
-          setItems(seed);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
-        } else {
-          setItems(localItems);
-        }
+        // E. Logged out: Use client localStorage items
+        setItems(localItems);
       }
       setHydrated(true);
     };
