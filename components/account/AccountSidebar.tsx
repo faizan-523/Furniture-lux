@@ -66,7 +66,10 @@ export function AccountSidebar({ user }: AccountSidebarProps) {
           {/* Sign out */}
           <li className="mt-2 border-t border-[--color-border] pt-2">
             <button
-              onClick={() => signOut({ callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/` })}
+              onClick={async () => {
+                await signOut({ redirect: false });
+                window.location.href = "/";
+              }}
               className="w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-xs font-semibold font-sans text-[--color-muted-foreground] hover:bg-red-50 hover:text-red-600 transition-colors"
             >
               <LogOut className="size-4 shrink-0" />

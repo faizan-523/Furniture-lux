@@ -199,9 +199,10 @@ function AuthMenu() {
             {/* Sign out Option */}
             <button
               role="menuitem"
-              onClick={() => {
+              onClick={async () => {
                 setOpen(false);
-                signOut({ callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/` });
+                await signOut({ redirect: false });
+                window.location.href = "/";
               }}
               className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-[--color-destructive] hover:bg-[--color-destructive]/8 transition-colors text-left"
             >
@@ -444,7 +445,10 @@ export function Header() {
                         variant="ghost"
                         size="md"
                         fullWidth
-                        onClick={() => signOut({ callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/` })}
+                        onClick={async () => {
+                          await signOut({ redirect: false });
+                          window.location.href = "/";
+                        }}
                         className="text-[--color-destructive] hover:bg-[--color-destructive]/5"
                       >
                         <LogOut className="size-4" aria-hidden="true" />
