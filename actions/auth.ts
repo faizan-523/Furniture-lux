@@ -90,32 +90,8 @@ export async function registerUser(
     };
   }
 
-  // 4. Auto sign-in after registration
-  try {
-    await signIn("credentials", {
-      email: normalizedEmail,
-      password,
-      redirect: false,
-    });
-  } catch (error) {
-    if (isNextRedirect(error)) throw error;
-
-    const err = error as { type?: string; name?: string; message?: string };
-    if (
-      error instanceof AuthError ||
-      err?.type ||
-      err?.name === "CredentialsSignin" ||
-      err?.name === "AuthError"
-    ) {
-      return {
-        success: false,
-        message: "Account created but sign-in failed. Please sign in manually.",
-      };
-    }
-  }
-
-  // 5. Redirect outside of try/catch (redirect throws internally)
-  redirect(ROUTES.ACCOUNT);
+  // 4. Redirect to sign-in page upon successful user creation
+  redirect(`${ROUTES.SIGN_IN}?registered=true`);
 }
 
 // ─── Login ────────────────────────────────────────────────────────────────────
