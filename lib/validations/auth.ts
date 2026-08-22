@@ -15,9 +15,10 @@ export const SignUpSchema = z
       .trim(),
 
     email: z
-      .email({ error: "Please enter a valid email address." })
+      .string()
       .trim()
-      .toLowerCase(),
+      .toLowerCase()
+      .pipe(z.string().email({ error: "Please enter a valid email address." })),
 
     password: z
       .string()
@@ -44,9 +45,10 @@ export type SignUpInput = z.infer<typeof SignUpSchema>;
 
 export const SignInSchema = z.object({
   email: z
-    .email({ error: "Please enter a valid email address." })
+    .string()
     .trim()
-    .toLowerCase(),
+    .toLowerCase()
+    .pipe(z.string().email({ error: "Please enter a valid email address." })),
 
   password: z.string().min(1, { error: "Password is required." }),
 });

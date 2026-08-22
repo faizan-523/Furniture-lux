@@ -57,12 +57,9 @@ const UserSchema = new Schema<IUserDocument>(
   },
   {
     timestamps: true,
+    collection: "users",
   },
 );
-
-// ─── Index ────────────────────────────────────────────────────────────────────
-
-UserSchema.index({ email: 1 });
 
 // ─── Model ────────────────────────────────────────────────────────────────────
 // Guard against model re-registration in Next.js dev hot-reload
