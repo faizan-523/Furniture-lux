@@ -73,9 +73,20 @@ export async function registerUser(
     await UserModel.create({ name, email: normalizedEmail, hashedPassword, role: "user" });
   } catch (error) {
     console.error("[registerUser]", error);
+    if ((error as { code?: number })?.code === 11000) {
+      return {
+        success: false,
+        message: "An account with this email already exists.",
+        fieldErrors: { email: ["This email is already registered."] },
+      };
+    }
+    const message =
+      error instanceof Error && error.message
+        ? error.message
+        : "Something went wrong. Please try again.";
     return {
       success: false,
-      message: "Something went wrong. Please try again.",
+      message,
     };
   }
 
@@ -89,7 +100,13 @@ export async function registerUser(
   } catch (error) {
     if (isNextRedirect(error)) throw error;
 
-    if (error instanceof AuthError || (error as { type?: string })?.type) {
+    const err = error as { type?: string; name?: string; message?: string };
+    if (
+      error instanceof AuthError ||
+      err?.type ||
+      err?.name === "CredentialsSignin" ||
+      err?.name === "AuthError"
+    ) {
       return {
         success: false,
         message: "Account created but sign-in failed. Please sign in manually.",
